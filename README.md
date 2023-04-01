@@ -1,2 +1,2 @@
 # visionArtificial
-para poder manejar juegos con la camara
+Este es un código en JavaScript que usa la cámara web para mostrar la imagen en un elemento canvas en la página web. Luego, busca píxeles de color amarillo en la imagen y los marca en rojo. Además, calcula el punto promedio de todos los píxeles amarillos encontrados y dibuja un círculo azul en esa ubicación. El código utiliza la API getUserMedia() para acceder a la cámara web y procesa la imagen en intervalos regulares utilizando la función setTimeout().
