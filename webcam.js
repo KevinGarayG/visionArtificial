@@ -77,12 +77,12 @@ function procesarCamara()
 			Math.pow(color.g- verde, 2) + 
 			Math.pow(color.b- azul, 2)
 		);
-		//si el pixel es suficientemente cercano a nuestro color lo pintamos de rojo
+		//si el pixel es suficientemente cercano a nuestro color lo pintamos pixeles
 		if (distancia < distanciaAceptableColor) 
-		{
-			pixeles[i] = 0;
-			pixeles[i+1] = 255;	
-			pixeles[i+2] = 0; 
+		{//pintamos pixeles
+			pixeles[i] = 0;//r
+			pixeles[i+1] = 255;	//g
+			pixeles[i+2] = 0; //b
 
 			var y = Math.floor(i / 4 / canvas.width);
 			var x = (i / 4) % canvas.width;
@@ -128,8 +128,19 @@ function procesarCamara()
 	}
 	ctx.putImageData(imageData,0, 0);
 
-	for(var k = 0; k < elementos.length; k++) {
-		elementos[k].dibujar(ctx);
+	 elementos = unirRectIntesect(elementos);
+
+	for(var k = 0; k < elementos.length; k++)
+	{	//si el area de un objeto es muy pequeño no lo consideramos
+
+		var width = elementos[k].xMaxima - elementos[k].xMinima;
+		var height = elementos[k].yMaxima - elementos[k].yMinima;
+		var area = width * height;
+		if (area > 800) 
+		{
+			elementos[k].dibujar(ctx);	
+		}
+		
 	}
 
 	//si existe un pixel de nuestro color, entonces proediamos el lugar en donde se encentran todos lo pixeles de nuestro color
@@ -143,4 +154,60 @@ function procesarCamara()
 	}*/
 
 	setTimeout(procesarCamara, 0);
+}
+
+/**
+ * Esta funcion tiene como objetivo recibir un arreglo de objetos "Objeto" que pueden tener
+ * intersecciones entre ellos (rectangulos dentro de otros rectangulos, o con cualquier interseccion)
+ *
+ * Regresa un arreglo en donde, si encontro intersecciones, une esos objetos.
+ *
+ * Es decir puede regresar el mismo arreglo, o uno con menos objetos (pero mas grandes)
+ */
+function unirRectIntesect(elementos)
+{
+	var salir = false;
+
+	for (var i = 0; i < elementos.length; i++)
+	{
+		for (var j = 0; j < elementos.length; j++) 
+		{
+	       if (i == j) continue;//si es el mismo rectangulo no lo consideres
+
+	       var objeto1 = elementos[i];
+	       var objeto2 = elementos[j];
+
+	       var intersectan = objeto1.xMinima < objeto2.xMaxima &&
+	       	   objeto1.xMaxima > objeto2.xMinima &&
+	       	   objeto1.yMinima < objeto2.yMaxima &&
+	       	   objeto1.yMaxima > objeto2.yMinima;
+
+	       if (intersectan) 
+	       {//pasar por los pixeles del j al i
+	       	 for (var k = 0; k < objeto2.pixeles.length; k++) 
+	       	 {
+	       		objeto1.agregarPixel(
+	       			objeto2.pixeles[k].x,
+	       			objeto2.pixeles[k].y
+	       		);
+	       	 }
+	       	 // borrar el i
+	       	 elementos.splice(j, 1);
+	       	 salir = true;
+	       	 break;
+	       }
+		}
+
+		if (salir) break;
+	}
+	/*si encontramos una interseccion , reporcesamos todo nuevamente con
+	  el arreglo modificado */
+	if (salir) 
+	{
+		return unirRectIntesect(elementos);
+	}
+	else // no hay mas intersecciones
+	{
+		return elementos;
+	}
 }
