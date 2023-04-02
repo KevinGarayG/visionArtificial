@@ -23,15 +23,8 @@ class Objeto
 		this.pixeles.push( {x: x, y: y} );
 
 		//buscamos las "x" & "y" maximas & minimas
-		if (x < this.xMinima) 
-		{
-			this.xMinima = x;
-		}
-		if (x > this.xMaxima) 
-		{
-			this.xMaxima = x;
-		}
-
+		this.xMinima = x < this.xMinima ? x : this.xMinima;
+		this.xMaxima = x > this.xMaxima ? x : this.xMaxima;
 
 		this.yMinima = y < this.yMinima ? y : this.yMinima;
 		this.yMaxima = y > this.yMaxima ? y : this.yMaxima;
@@ -41,26 +34,39 @@ class Objeto
 	  cerca a el pixel mas cercano al nuevo pixel */
 	estaCerca(x, y)
 	{
-		var menorDistacia = -1;
-
-		for (var i = 0; i < this.pixeles.length; i++)
-		{
-			var distancia = Math.sqrt( //medir distancia
-			Math.pow(this.pixeles[i].x - x, 2) +
-			Math.pow(this.pixeles[i].y - y, 2)
-			);
-
-			if (menorDistacia == -1 || distancia < menorDistacia) 
-			{
-				menorDistacia = distancia;
-			}
-		}
-
-		if (menorDistacia <= 50) 
+		// revisamos si el pixel esta dentro del rectnagulo
+		if (x >= this.xMinima && x <= this.xMaxima &&
+			y >= this.yMinima && y <= this.yMaxima) 
 		{
 			return true;
 		}
 
+		var distX = 0;
+		var distY = 0;
+
+		if ( x < this.xMinima) 
+		{
+			distX = this.xMinima - x;
+		}
+		if ( x > this.xMaxima) 
+		{
+			distX = x - this.xMaxima;
+		}
+		if ( y < this.yMinima) 
+		{
+			distY = this.yMinima - y;
+		}
+		if ( y > this.yMaxima) 
+		{
+			distY = y - this.yMaxima;
+		}
+
+		var distancia = distX + distY;
+
+		if (distancia < 50) 
+		{
+			return true;
+		}
 		return false;
 	}
 
