@@ -59,9 +59,11 @@ function procesarCamara()
 	//var pixelMasAmarillo = null;
 	//var menorDistacia = null;
 
-	var sumX = 0;
-	var sumY = 0;
-	var cont = 0;
+	//var sumX = 0;
+	//var sumY = 0;
+	//var cont = 0;
+
+	var elementos = [];
 
 	//recorremos cada pixel y medimos la distancia entre el color de ese pixel y el color a comparar
 	for (var i = 0; i < pixeles.length; i+=4) {
@@ -85,11 +87,35 @@ function procesarCamara()
 			var y = Math.floor(i / 4 / canvas.width);
 			var x = (i / 4) % canvas.width;
 
-			sumX += x;
-			sumY += y;
-			cont++;
-		}else{
+			//Agrupacion
+			if(elementos.length == 0)
+			{// mi primer objeto
+				var objeto = new Objeto(x, y);
+				elementos.push(objeto);
+			} 
+			else
+			{
+				//si el pixel esta cerca se une al objeto, si no, se crea un objeto nuevo
+				var encontrado = false;
+				for (var j = 0; j < elementos.length; j++)
+				 {
+					if (elementos[j].estaCerca(x, y)) 
+					{
+						elementos[j].agregarPixel(x, y);
+						encontrado = true;
+						break;
+					}
+				}
+				if (!encontrado) 
+				{
+					var objeto = new Objeto(x, y);
+					elementos.push(objeto);
+				}
+			}
 
+			//sumX += x;
+			//sumY += y;
+			//cont++;
 		}
 		/*if(menorDistacia == null || distancia < menorDistacia)
 		{
@@ -102,15 +128,19 @@ function procesarCamara()
 	}
 	ctx.putImageData(imageData,0, 0);
 
+	for(var k = 0; k < elementos.length; k++) {
+		elementos[k].dibujar(ctx);
+	}
+
 	//si existe un pixel de nuestro color, entonces proediamos el lugar en donde se encentran todos lo pixeles de nuestro color
-	if(cont > 0)
+	/*if(cont > 0)
 	{
 		ctx.fillStyle = "#f00";
 		ctx.beginPath();
 		ctx.arc(sumX/cont, sumY/cont, 10, 0, 2*Math.PI);
 		ctx.fill();
 
-	}
+	}*/
 
 	setTimeout(procesarCamara, 0);
 }
