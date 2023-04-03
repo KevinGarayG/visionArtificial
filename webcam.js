@@ -36,16 +36,17 @@ function mostrarCamara()
 		{
 			console.log("no se pudo...", err);
 		})
-	} else
+	} 
+	else
 	{
 		console.log("No existe la funcion getUserMedia...");
 	}
 }
 
-/*obtiene una imagen de la cámara y la procesa para identificar los píxeles que se acercan más al color a comparar, 
-  los cuales serán marcados con un círculo azul en la imagen resultante. Además, se calcula la posición promedio de
-  los píxeles encontrados y se dibuja otro círculo azul en dicha posición. La función se llama de manera recursiva
-  con un retraso de 20ms para actualizar continuamente la imagen*/
+/* se llama cada vez que se actualiza la imagen de la cámara en el canvas. Se obtiene la 
+   información de los píxeles de la imagen y se recorre cada uno de ellos para medir la distancia
+   entre el color del pixel y el color a comparar. Si la distancia es menor a la distancia aceptable,
+   se pinta el pixel de verde y se agrupa con otros píxeles cercanos en un objeto.*/
 function procesarCamara()
 {
 	var ctx = canvas.getContext("2d");
@@ -54,14 +55,7 @@ function procesarCamara()
 
 	var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	var pixeles = imageData.data;
-	//console.log(pixeles);
 
-	//var pixelMasAmarillo = null;
-	//var menorDistacia = null;
-
-	//var sumX = 0;
-	//var sumY = 0;
-	//var cont = 0;
 
 	var elementos = [];
 
@@ -112,23 +106,15 @@ function procesarCamara()
 					elementos.push(objeto);
 				}
 			}
-
-			//sumX += x;
-			//sumY += y;
-			//cont++;
 		}
-		/*if(menorDistacia == null || distancia < menorDistacia)
-		{
-			menorDistacia = distancia;
-			var y = Math.floor(i / 4 / canvas.width);
-			var x = (i / 4) % canvas.width;
-			pixelMasAmarillo ={x: x, y: x};
-		}*/
-
 	}
 	ctx.putImageData(imageData,0, 0);
 
 	 elementos = unirRectIntesect(elementos);
+
+	 //variables para dibujar el objeto de mayor tamaño
+	 var objMasGrande = null;
+	 var masGrande = -1;
 
 	for(var k = 0; k < elementos.length; k++)
 	{	//si el area de un objeto es muy pequeño no lo consideramos
@@ -138,21 +124,19 @@ function procesarCamara()
 		var area = width * height;
 		if (area > 800) 
 		{
-			elementos[k].dibujar(ctx);	
+			if(objMasGrande == null || area > masGrande)
+			{//buscamos el objeto de mayor tamaño
+				objMasGrande = elementos[k];
+				masGrande = area
+			}
 		}
-		
 	}
-
-	//si existe un pixel de nuestro color, entonces proediamos el lugar en donde se encentran todos lo pixeles de nuestro color
-	/*if(cont > 0)
-	{
-		ctx.fillStyle = "#f00";
-		ctx.beginPath();
-		ctx.arc(sumX/cont, sumY/cont, 10, 0, 2*Math.PI);
-		ctx.fill();
-
-	}*/
-
+	// dibujamos objeto de mayor tamaño
+	if (objMasGrande != null)
+	 {
+	 	objMasGrande.dibujar(ctx)
+	 	document.getElementById("grados").innerHTML = (objMasGrande.grados);
+	 }
 	setTimeout(procesarCamara, 0);
 }
 

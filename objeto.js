@@ -7,6 +7,7 @@ class Objeto
 	xMaxima = 0;
 	yMinima = 0;
 	yMaxima = 0;
+	grados = 0;
 
 	constructor(x, y)
 	{
@@ -83,6 +84,56 @@ class Objeto
 
 		ctx.rect(x, y, width, height);
 		ctx.stroke();	
+
+		var centroX = x + (width/2);
+		var centroY = y + (height/2);
+
+		ctx.beginPath();
+		ctx.fillStyle = "#00f";
+		ctx.arc(centroX, centroY, 5, 0, 2*Math.PI);
+		ctx.fill();
+
+		var sumaYIzq = 0;
+		var cuentaYIzq = 0;
+		var sumaYDer = 0;
+		var cuentaYDer = 0;
+
+
+		for (var i = 0; i < this.pixeles.length; i++) 
+		{
+			if (this.pixeles[i].x <= (x +(width*.1)))
+			{
+				sumaYIzq += this.pixeles[i].y;
+				cuentaYIzq++;
+			} 
+			else if(this.pixeles[i].x >= (x +(width*.9)))
+			{
+				sumaYDer += this.pixeles[i].y;
+				cuentaYDer++;
+			}
+		}
+		ctx.beginPath();
+		ctx.fillStyle = "#00f";
+		ctx.arc(this.xMinima, (sumaYIzq/cuentaYIzq), 5, 0, 2*Math.PI);
+		ctx.fill();
+
+		ctx.beginPath();
+		ctx.fillStyle = "#00f";
+		ctx.arc(this.xMaxima, (sumaYDer/cuentaYDer), 5, 0, 2*Math.PI);
+		ctx.fill();
+
+		ctx.beginPath();
+		ctx.strokeStyle = "#f00";
+		ctx.moveTo(this.xMinima, (sumaYIzq/cuentaYIzq));
+		ctx.lineTo(this.xMaxima, (sumaYDer/cuentaYDer));
+		ctx.stroke();
+
+		var difY = (sumaYDer/cuentaYDer) - (sumaYIzq/cuentaYIzq);
+		var difX = this.xMaxima - this.xMinima;
+		var angleRadians = Math.atan2(difY, difX);
+        var angleDegrees = angleRadians * 180 / Math.PI;
+
+        this.grados = (angleDegrees.toFixed(0)) * -1;
 	}
 
 }
