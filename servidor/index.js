@@ -5,7 +5,7 @@ const express = require('express');
 const app = express()
 
 //Requiero las rutas
-const indexRouter = require("../routes/indexRouter");
+const indexRouter = require("./routes/indexRouter");
 
 
 //Configuro ejs como motor de plantilla

@@ -7,5 +7,6 @@ const indexController = require ("../controllers/indexController");
 router.get("/",indexController.index)
 
 
+
 //exporto la ruta
 module.exports = router;
