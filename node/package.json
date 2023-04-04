@@ -1,0 +1,22 @@
+{
+  "name": "node-app",
+  "version": "1.0.0",
+  "description": "Este proyecto de visión artificial utiliza la cámara del usuario para identificar objetos cercanos a un determinado color rojo y pintar sus píxeles de verde. También agrupa los píxeles cercanos y dibuja un rectángulo alrededor del objeto más grande.",
+  "main": "objeto.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinGarayG/visionArtificial.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KevinGarayG/visionArtificial/issues"
+  },
+  "homepage": "https://github.com/KevinGarayG/visionArtificial#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
